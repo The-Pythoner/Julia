@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import pygame as pg
 pg.init()
 
-filename = "mandelbrot-0.39-0.59i.png"
-f1 = lambda x: x**2-0.39-0.59j
+filename = "julia+0.1+0.65i.png"
+f1 = lambda x: x**2+0.1+0.65j
 
 zoom_center = [0, 0]
 zoom_scale = 4
@@ -14,7 +14,7 @@ def f2(x, n):
 	for i in range(n):
 		x = f1(x)
 
-		if x.real > 1000000 or x.imag > 1000000:
+		if x.real > 256 or x.imag > 256:
 			return i
 
 	return -1
@@ -37,12 +37,12 @@ def julia(zoom_center, zoom_scale):
 
 	return pg.image.load(filename)
 
+image = julia(zoom_center, zoom_scale)
+
 win = pg.display.set_mode((1200, 600))
-pg.display.set_caption("x^2"+filename[10:-4])
+pg.display.set_caption("Julia x^2"+filename[5:-4])
 
 run = True
-
-image = julia(zoom_center, zoom_scale)
 
 while run:
 	win.blit(image, (0, 0))
@@ -70,5 +70,7 @@ while run:
 			zoom += 1
 
 			image = julia(zoom_center, zoom_scale)
+
+			print(zoom_center[0], str(zoom_center[1])+"i")
 
 pg.quit()
