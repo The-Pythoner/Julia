@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import pygame as pg
 pg.init()
 
-filename = "julia+0.1+0.65i.png"
-f1 = lambda x: x**2+0.1+0.65j
+filename = "julia-0.75.png"
+f1 = lambda x: x**2-0.75
 
 zoom_center = [0, 0]
 zoom_scale = 4
