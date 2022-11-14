@@ -31,7 +31,7 @@ def julia(zoom_center, zoom_scale):
 				image[j, i] = [0, 0, 0, 1]
 
 			else:
-				image[j, i] = [y/128/2**zoom, y/128/2**zoom, y/64/2**zoom, 1]
+				image[j, i] = [y/64/2**zoom, y/64/2**zoom, y/32/2**zoom, 1]
 
 	plt.imsave(filename, image)
 
@@ -70,7 +70,5 @@ while run:
 			zoom += 1
 
 			image = julia(zoom_center, zoom_scale)
-
-			print(zoom_center[0], str(zoom_center[1])+"i")
 
 pg.quit()
