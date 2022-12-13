@@ -1,1 +1,1 @@
-you can change the variable filename and the function f1 for generating an another fractal
+you can change the function by changing the variable c
