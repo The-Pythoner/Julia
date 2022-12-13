@@ -3,72 +3,78 @@ import matplotlib.pyplot as plt
 import pygame as pg
 pg.init()
 
-filename = "julia-0.75.png"
-f1 = lambda x: x**2-0.75
+c = -3/4
 
-zoom_center = [0, 0]
-zoom_scale = 4
-zoom = 0
+def to_str(n):
+	if str(n)[0] == "-":
+		return str(n)
 
-def f2(x, n):
+	else:
+		return "+"+str(n)
+
+f1 = lambda x: x**2+c
+filename = "julia"+to_str(c)+".jpg"
+
+center = [0, 0]
+zoom = 1
+n = 32
+
+def f(x, n):
+	result = np.zeros(x.shape)
+
 	for i in range(n):
 		x = f1(x)
 
-		if x.real > 256 or x.imag > 256:
-			return i
+		result[abs(x) > 256] = i
+		x[abs(x) > 256] = 0
 
-	return -1
+	return result
 
-def julia(zoom_center, zoom_scale):
-	image = np.zeros((600, 1200, 4))
+def color(array, n):
+	result = np.zeros((array.shape[0], array.shape[1], 4))
 
-	for i in range(1200):
-		for j in range(600):
-			y = f2(i*zoom_scale/1200+zoom_center[0]-zoom_scale/2
-			+(j*zoom_scale/1200+zoom_center[1]-zoom_scale/4)*1j, int(32*2**zoom))
+	for i in range(array.shape[0]):
+		for j in range(array.shape[1]):
+			result[i, j, 0] = array[i, j]/n/2
+			result[i, j, 1] = array[i, j]/n/2
+			result[i, j, 2] = array[i, j]/n
+			result[i, j, 3] = 1
 
-			if y == -1:
-				image[j, i] = [0, 0, 0, 1]
+	return result
 
-			else:
-				image[j, i] = [y/64/2**zoom, y/64/2**zoom, y/32/2**zoom, 1]
+def julia(center, zoom, n):
+	array_real = np.concatenate((np.linspace(-1/zoom*2+center[0], 1/zoom*2+center[0], 1200).reshape((1200, 1)), np.ones((1200, 1))), axis=1)
+	array_imag = np.concatenate((np.ones((600, 1)), np.linspace(-1/zoom+center[1], 1/zoom+center[1], 600, dtype=np.complex64).reshape((600, 1))*1j), axis=1)
 
-	plt.imsave(filename, image)
+	array = np.dot(array_imag, array_real.T)
+	array_out = f(array, n)
 
-	return pg.image.load(filename)
+	result = color(array_out, n)
+	plt.imsave(filename, result)
+	image = pg.image.load(filename)
 
-image = julia(zoom_center, zoom_scale)
+	return image
 
-win = pg.display.set_mode((1200, 600))
-pg.display.set_caption("Julia x^2"+filename[5:-4])
+screen = pg.display.set_mode((1200, 600))
+pg.display.set_caption("Julia f(x)=x^2"+to_str(c))
+
+image = julia(center, zoom, n)
 
 run = True
 
 while run:
-	win.blit(image, (0, 0))
+	screen.blit(image, (0, 0))
 	pg.display.flip()
 
 	for event in pg.event.get():
 		if event.type == pg.QUIT:
 			run = False
 
-		if event.type == pg.MOUSEBUTTONUP:
-			x, y = event.pos
+		elif event.type == pg.MOUSEBUTTONUP:
+			center = [(event.pos[0]-600)/300/zoom+center[0], (event.pos[1]-300)/300/zoom+center[1]]
+			zoom *= 4
+			n += 4
 
-			x /= 1200
-			y /= 1200
-
-			x -= 0.5
-			y -= 0.25
-
-			x *= zoom_scale
-			y *= zoom_scale
-
-			zoom_center = [zoom_center[0]+x, zoom_center[1]+y]
-
-			zoom_scale /= 8
-			zoom += 1
-
-			image = julia(zoom_center, zoom_scale)
+			image = julia(center, zoom, n)
 
 pg.quit()
