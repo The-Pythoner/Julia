@@ -9,6 +9,12 @@ def to_str(n):
 	if str(n)[0] == "-":
 		return str(n)
 
+	elif str(n)[:2] == "(-":
+		return str(n)[1:-1]
+
+	elif str(n)[0] == "(":
+		return "+"+str(n)[1:-1]
+
 	else:
 		return "+"+str(n)
 
