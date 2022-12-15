@@ -1,1 +1,1 @@
-you can change the coefficient in the txt file
+if you want to generate without python, go to my website: https://thepythoner.pythonanywhere.com
