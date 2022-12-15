@@ -1,1 +1,1 @@
-you can change the function by changing the variable c (line 6)
+you can change the coefficient in the txt file
