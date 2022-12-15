@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 import pygame as pg
 pg.init()
 
-c = -3/4
+with open("readme.txt") as file:
+	n = file.read().split("\n")
+	c = float(n[-2])+float(n[-1])*1j
 
 def to_str(n):
 	if str(n)[0] == "-":
