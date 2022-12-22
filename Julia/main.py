@@ -4,8 +4,8 @@ import pygame as pg
 pg.init()
 
 with open("readme.txt") as file:
-	n = file.read().split("\n")
-	c = float(n[-2])+float(n[-1])*1j
+	text = file.read().split("\n")
+	c = float(text[-2])+float(text[-1])*1j
 
 def to_str(n):
 	if str(n)[0] == "-":
@@ -21,7 +21,7 @@ def to_str(n):
 		return "+"+str(n)
 
 f1 = lambda x: x**2+c
-filename = "julia"+to_str(c)+".jpg"
+filename = "julia"+to_str(c).replace("j", "i")+".jpg"
 
 center = [0, 0]
 zoom = 1
@@ -34,7 +34,7 @@ def f(x, n):
 		x = f1(x)
 
 		result[abs(x) > 256] = i
-		x[abs(x) > 256] = 0
+		x[result != 0] = 0
 
 	return result
 
@@ -51,7 +51,7 @@ def color(array, n):
 	return result
 
 def julia(center, zoom, n):
-	array_real = np.concatenate((np.linspace(-1/zoom*2+center[0], 1/zoom*2+center[0], 1200).reshape((1200, 1)), np.ones((1200, 1))), axis=1)
+	array_real = np.concatenate((np.linspace(-2/zoom+center[0], 2/zoom+center[0], 1200).reshape((1200, 1)), np.ones((1200, 1))), axis=1)
 	array_imag = np.concatenate((np.ones((600, 1)), np.linspace(-1/zoom+center[1], 1/zoom+center[1], 600, dtype=np.complex64).reshape((600, 1))*1j), axis=1)
 
 	array = np.dot(array_imag, array_real.T)
@@ -64,7 +64,7 @@ def julia(center, zoom, n):
 	return image
 
 screen = pg.display.set_mode((1200, 600))
-pg.display.set_caption("Julia f(x)=x^2"+to_str(c))
+pg.display.set_caption("Julia f(x)=x^2"+to_str(c).replace("j", "i"))
 
 image = julia(center, zoom, n)
 
